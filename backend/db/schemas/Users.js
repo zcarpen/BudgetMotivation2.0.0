@@ -17,8 +17,8 @@ const UsersSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    transactions: {
-        type: Array,
+    password: {
+        type: String,
         required: true,
     }
 })
