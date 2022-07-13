@@ -4,6 +4,7 @@ const UsersSchema = mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     visibleExpenses: {
         type: Array,
