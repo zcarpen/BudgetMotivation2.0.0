@@ -4,13 +4,14 @@ import React from 'react'
 
 type ButtonProps = {
     children: any,
-    onClick: (e: any) => void,
+    onClick?: (e: any) => void,
+    type: "button" | "submit" | "reset",
     secondary?: boolean //flag
 }
 
-export default function Button({ children, onClick, secondary }: ButtonProps) {
+export default function Button({children, ...props }: ButtonProps) {
   return (
-    <StyledButton secondary={secondary} onClick={onClick}>
+    <StyledButton {...props}>
         {children}
     </StyledButton>
   )

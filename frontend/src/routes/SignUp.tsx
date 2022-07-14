@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {Link} from 'react-router-dom';
 import styles from 'styled-components';
 import Button from '../core/button';
+import Input from '../core/input';
 import axios from 'axios';
 
 const SignUp = () => {
@@ -50,15 +51,13 @@ const SignUp = () => {
             password: userData.password
         }
 
-        console.log(newUser)
-
         try {
             const result = await axios({
                 method: 'post',
                 url: 'http://localhost:3001/sign-up',
                 data: newUser
             })
-            console.log(result)
+            // redirect to main page
         } catch(err) {
             console.log('error: ', err)
         }
@@ -69,7 +68,7 @@ const SignUp = () => {
         <Form onSubmit={handleUserData}>
             <InputContainer>
                 <Label htmlFor="username">Create a Username:</Label>
-                <Input value={userData.username} type="text" id="username" onChange={(e) => updateUserData(e)} />
+                <Input value={userData.username} type="text" id="username" onChange={updateUserData} />
                 {usernameError && <ErrorMessage >***username must exceed 5 characters***</ErrorMessage>}
             </InputContainer>
             <InputContainer>
@@ -93,7 +92,7 @@ const SignUp = () => {
                 {passwordError && <ErrorMessage >***password must exceed 5 characters and match***</ErrorMessage>}
             </InputContainer>
             <ButtonContainer>
-                <Button primary type="submit">Submit</Button>
+                <Button type="submit">Submit</Button>
                 <Link to="/login">
                     <Button secondary type="submit">Login</Button>
                 </Link>
@@ -137,12 +136,6 @@ const ErrorMessage = styles.p({
     width: "100%",
     textAlign: "center",
     transform: "translate(-50%, 0)",
-})
-
-const Input = styles.input({
-    alignSelf: "center",
-    width: "80%",
-    padding: "5px",
 })
 
 const Label = styles.label({

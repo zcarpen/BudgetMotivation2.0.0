@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Button from "./core/button";
 import SignUp from './routes/SignUp';
+// import Nav from 
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
     // </Container>
     <Container>
       <Router>
+        {/* <Nav /> */}
         <Routes>
           <Route path='/sign-up' element={<SignUp />} />
         </Routes>
