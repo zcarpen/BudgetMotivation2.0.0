@@ -2,12 +2,12 @@
 
 import { Transaction } from "./types/Transaction";
 
-type ExpenseObject = {
+type NumbersObject = {
     [key: string] : number
 }
 
-export function createExpensesObj(arrayOfExpenses: Transaction[]): ExpenseObject {
-    let expensesObject: ExpenseObject = {};
+export function createExpensesObj(arrayOfExpenses: Transaction[]): NumbersObject {
+    let expensesObject: NumbersObject = {};
 
     arrayOfExpenses.forEach(e => {
         expensesObject[e.expenseType] = expensesObject[e.expenseType] === undefined ? e.cost : expensesObject[e.expenseType] + e.cost
@@ -45,11 +45,11 @@ export function addCategory(visibleExpenses: string[], newCategory: string): str
 
 // function that calculates percentage of expenses (used for pie chart)
 export function calcPercentagesOfExpenses(allTransactions: Transaction[]) {
-    const percentages = {}
+    const percentages: NumbersObject = {}
     let totalPercentage = 0; // this variable is used to ensure we have all 100% accounted for
     const total = calcTotalExpenses(allTransactions);
     const expenses = createExpensesObj(allTransactions)
-    Object.entries(expenses).forEach(([category, val]) => {
+    Object.entries(expenses).forEach(([category, val]: [string, number]) => {
         let percent = Number((val / total).toFixed(2))
         percentages[category] = percent;
         totalPercentage += percent
@@ -63,25 +63,56 @@ export function calcPercentagesOfExpenses(allTransactions: Transaction[]) {
 
 
 
-// function that toggels a transaction on the expenses object
+// function that toggels a category from an array of active categories... Filter will be used with all transactions
+// and this "activeCatagories" array to find the current total
+
+export function toggleActiveCategories(category: string, activeCatagories: string[]): string[] {
+    let categoryIdx: number = activeCatagories.indexOf(category);
+
+    if (categoryIdx === -1) {
+        return [...activeCatagories, category]
+    } else {
+        return activeCatagories.slice(0, categoryIdx).concat(activeCatagories.slice(categoryIdx + 1))
+    }
+}
 // function used to calculate the transactions that aren't toggled off
-// function that deletes an icon from the list of expenses
-// function that updates a transaction
-// function that removes a transaction
+export function totalToggledTransactions(activeCatagories: string[], allTransactions: Transaction[]) {
+    return allTransactions.reduce((acc:number , t:Transaction) => {
+        if (activeCatagories.includes(t.expenseType)) {
+            return acc + t.cost;
+        }
+        return acc;
+    }, 0)
+}
 
 
+// function that gets the monthly compounded interest for a given year
+export const getMonthlyCompoundInterest = (
+    initialInvestment: number, 
+    interestRate: number = .1, 
+    time: number = 1, 
+    monthlyInvestments: number = 0
+) => {
+    if (initialInvestment <= 0) return 0;
+    return Number(
+        (initialInvestment * 
+            (Math.pow((1 + interestRate / 12), (12 * time))) + 
+            (monthlyInvestments * (((Math.pow(1 + (interestRate / 12), 12 * time)) - 1) / (interestRate / 12)))
+        ).toFixed(2)
+    );
+}
 
-// export const getMonthlyCompoundInterest = (initialInvestment, interestRate = .1, time = 1, monthlyInvestments = 0) => {
-//     if (initialInvestment <= 0) return 0;
-//     return Number((initialInvestment * (Math.pow((1 + interestRate / 12), (12 * time))) + (monthlyInvestments * (((Math.pow(1 + (interestRate / 12), 12 * time)) - 1) / (interestRate / 12)))).toFixed(2));
-// }
-  
-// export const getMonthlyCompoundInterest7 = (initialInvestment, time = 7, monthlyInvestments = 0) => {
-//     const investmentByYear = [];
-//     investmentByYear.push(initialInvestment);
-//     while (time > 0) {
-//         investmentByYear.push(getMonthlyCompoundInterest(investmentByYear[investmentByYear.length - 1], .1, 1, monthlyInvestments));
-//         time--;
-//     }
-//     return investmentByYear;
-// }
+// function that gets the monthly compounded over a variable number of years (returning an array of years)
+export const getMonthlyCompoundInterest7 = (
+    initialInvestment: number, 
+    time: number = 7, 
+    monthlyInvestments: number = 0
+) => {
+    const investmentByYear = [];
+    investmentByYear.push(initialInvestment);
+    while (time > 0) {
+        investmentByYear.push(getMonthlyCompoundInterest(investmentByYear[investmentByYear.length - 1], .1, 1, monthlyInvestments));
+        time--;
+    }
+    return investmentByYear;
+}

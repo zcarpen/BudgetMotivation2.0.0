@@ -1,4 +1,4 @@
-import {createExpensesObj, getRemainingAmount, addTransaction, calcPercentagesOfExpenses, calcTotalExpenses, addCategory} from "./helpers";
+import {createExpensesObj, getRemainingAmount, toggleActiveCategories, addTransaction, calcPercentagesOfExpenses, calcTotalExpenses, addCategory, totalToggledTransactions} from "./helpers";
 import {expect, describe, it, assert} from 'vitest';
 
 const data =
@@ -14,17 +14,47 @@ const allTransactions = [
     { id: 2, expenseType: 'coffee', cost: 100, time: 1 },
     { id: 3, expenseType: 'grocery', cost: 300, time: 1 },
     { id: 4, expenseType: 'gas', cost: 100, time: 1 },
-    { id: 5, expenseType: 'eatOut', cost: 100, time: 1 },
+    { id: 5, expenseType: 'eat-out', cost: 100, time: 1 },
     { id: 6, expenseType: 'movie', cost: 50, time: 1 },
     { id: 7, expenseType: 'music', cost: 50, time: 1 },
     { id: 8, expenseType: 'house', cost: 150, time: 1 },
     { id: 9, expenseType: 'gifts', cost: 30, time: 1 },
     { id: 10, expenseType: 'snack', cost: 30, time: 1 },
     { id: 11, expenseType: 'games', cost: 50, time: 1 },
-    { id: 12, expenseType: 'selfCare', cost: 150, time: 1 },
+    { id: 12, expenseType: 'self-care', cost: 150, time: 1 },
     { id: 13, expenseType: 'movie', cost: 50, time: 1 },
     { id: 14, expenseType: 'coffee', cost: 100, time: 1 },
   ]
+
+describe('totalToggledTransactions', () => {
+
+    it('should return total if there are no toggled transactions', () => {
+        const total = totalToggledTransactions(data.visibleExpenses, allTransactions);
+        expect(total).toBe(1270.00)
+    })
+    
+    it('should return 0 if all transactions are toggled off', () => {
+        const total = totalToggledTransactions([], allTransactions);
+        expect(total).toBe(0)
+    })
+    
+    it('should decrease total spent by amount toggled off', () => {
+        const total = totalToggledTransactions(['coffee', 'games'], allTransactions);
+        expect(total).toBe(250.00)
+    })
+})
+
+describe('toggleActiveCategories', () => {
+
+    it('should increase categories length by 1 when category is not in array', () => {
+        const categories = toggleActiveCategories('flowers', data.visibleExpenses);
+        expect(categories.length).toBe(data.visibleExpenses.length + 1)
+    })
+    it('should decrease categories length by 1 when category is in array', () => {
+        const categories = toggleActiveCategories('coffee', data.visibleExpenses);
+        expect(categories.length).toBe(data.visibleExpenses.length - 1)
+    })
+})
 
 // describe('calcPercentagesOfExpenses', () => {
 

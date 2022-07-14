@@ -3,14 +3,17 @@ const express = require('express');
 const dotenv = require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const User = require('./db/schemas/Users');
-const Transaction = require('./db/schemas/Transactions')
+const Transaction = require('./db/schemas/Transactions');
+const { urlencoded } = require('express');
 
 const PORT = process.env.PORT || 3002;
 const app = express();
 
 app.use(express.json())
+app.use(cors())
 
 mongoose.connect(
     "mongodb+srv://zcarpen:delete123@users.1ej04hd.mongodb.net/BudgetMotivation?retryWrites=true&w=majority", 
@@ -64,15 +67,26 @@ app.get('/login', async (req, res) => {
 })
 
 app.post('/sign-up', async (req, res) => {
+    const {username, income, budget, password} = req.body;
+    console.log(username, income, budget, password)
+    if (
+        username.length < 6 || 
+        password.length < 6 || 
+        Number(budget) <= 0 || 
+        Number(budget) !== Number(Number(budget).toFixed(2)) ||
+        Number(income) <= 0 || 
+        Number(income) !== Number(Number(income).toFixed(2))
+    ) {
+        res.status(401).send('information is not correct')
+    }
     let user = {
-        username: 'noecarpen', 
-        visibleExpenses: ['coffee', 'grocery', 'gas', 'entertainment', 'house', 'games', 'other'], 
-        monthlyIncome: 4000, 
-        // monthlyBudget: 3500, 
-        password: 'delete123'
+        username, 
+        visibleExpenses: ['other', 'coffee', 'grocery', 'gas', 'eat-out', 'movie', 'music', 'house', 'gifts', 'snack', 'games', 'self-care'], 
+        monthlyIncome: Number(income), 
+        monthlyBudget: Number(budget), 
+        password: password
     };
-    // verify client info is correct...
-        // if not, send 400 back
+
     try {
         const hashedPassword = await bcrypt.hash(user.password, 10)
         const hashedUser = new User({
@@ -87,7 +101,7 @@ app.post('/sign-up', async (req, res) => {
         res.status(201).send('inserted new user')
     } catch(error) {
         if (error.code === 11000) {
-            res.status(409).send()
+            res.status(409).send('redundant username')
         } else {
             console.log(error)
             res.status(500).send(error)
