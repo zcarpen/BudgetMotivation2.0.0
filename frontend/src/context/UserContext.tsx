@@ -1,12 +1,5 @@
 import {createContext, useState} from 'react';
-
-type UserData = {
-    monthlyBudget: number,
-    monthlyIncome: number,
-    password: 'string',
-    username: 'string',
-    visibleExpenses: string[],
-}
+import { UserData } from '../types/UserData';
 
 const UserContext= createContext()
 export const UserInfoProvider = ({children}: any) => {
