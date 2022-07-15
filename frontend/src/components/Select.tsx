@@ -1,8 +1,11 @@
 import {useState} from 'react'
 import styles from 'styled-components';
 import {Link} from 'react-router-dom';
+import {useContext} from 'react';
+import UserContext from '../context/UserContext';
 
 function Select() {
+    const ctx: any = useContext(UserContext);
     const [openSelect, setOpenSelect] = useState(false);
     const [selected, setSelected] = useState('Home');
 
@@ -12,19 +15,20 @@ function Select() {
 
     const changeSelected = (e: any) => {
         setSelected(e.target.id)
+        ctx.handleRedirect(e)
     }
   return (
     <Container>
         <Selected onClick={toggleSelect}>{selected}
             {openSelect && <Ul>
-                <Link to="/home" style={{textDecoration: 'none'}}>
-                    <ListItem id="Home" onClick={changeSelected}>Home</ListItem>
+                <Link to="/" style={{textDecoration: 'none'}}>
+                    <ListItem id="home" onClick={changeSelected}>Home</ListItem>
                 </Link>
                 <Link to="/motivation" style={{textDecoration: 'none'}}>
-                    <ListItem id="Motivation" onClick={changeSelected}>Motivation</ListItem>
+                    <ListItem id="motivation" onClick={changeSelected}>Motivation</ListItem>
                 </Link>
                 <Link to="/charts" style={{textDecoration: 'none'}}>
-                    <ListItem id="Charts" onClick={changeSelected}>Charts</ListItem>
+                    <ListItem id="charts" onClick={changeSelected}>Charts</ListItem>
                 </Link>
             </Ul>}
         </Selected>

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Form from '../core/loginAndSignUpForms/form';
 import Label from '../core/loginAndSignUpForms/label';
 import ButtonContainer from '../core/loginAndSignUpForms/buttonContainer';
@@ -19,22 +19,21 @@ function Login() {
 
   const [error, setError] = useState(false)
 
+  const navigate = useNavigate();
+
   
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
     try {
-      console.log('trying')
-
-      console.log(formData)
-
       const result = await axios({
         method: 'post',
         url: 'http://localhost:3001/login',
         data: formData,
       })
-
+      console.log(result.data)
       window.localStorage.setItem("accessToken", result.data.accessToken)
+      navigate('/home', { replace: true})
       // save data into global context
       // redirect to main page
     } catch (err) {
@@ -88,6 +87,7 @@ const Container = styles.div({
 
 const Error = styles.h3({
   color: "red",
+  textAlign: "center"
 
 })
 

@@ -59,9 +59,7 @@ app.post('/login', async (req, res) => {
             const transactions = await Transaction.find({userID: user[0]._id.toString()})
             const secret = process.env.SECRET;
             const signedToken = jwt.sign({data: {userID: user[0]._id, username: user[0].username}}, secret )
-            // console.log(signedToken)
-            // res.cookie("accessToken", signedToken)
-            // localStorage.setItem('accessToken', signedToken)
+            
             res.send({user, transactions, accessToken: signedToken})
             // redirect to main expense page
         } else {
