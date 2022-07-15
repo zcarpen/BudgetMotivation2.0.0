@@ -4,7 +4,7 @@ type InputProps = {
     type: string,
     value: any,
     id: string,
-    onChange: any, // should be type () => void ????
+    onChange: (e: any) => void,
 }
 
 export default function Input({...props}: InputProps) {

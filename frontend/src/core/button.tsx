@@ -18,9 +18,10 @@ export default function Button({children, ...props }: ButtonProps) {
 }
 
 const StyledButton = styled.button((props: ButtonProps) => ({
-    padding: "8px 12px",
-    borderRadius: "10px",
-    backgroundColor: props.secondary ? "blue" : "green",
-    color: "#fff",
-    width: "5rem",
+    padding: props.secondary ? "0": "8px 70px",
+    borderRadius: props.secondary ? "": "10px",
+    backgroundColor: props.secondary ? "transparent" : "green",
+    border: props.secondary ? "none" : "",
+    color: props.secondary ? "#000" : "#fff",
+    boxShadow: props.secondary ? "none" : "3px 3px 3px rgba(0,0,0,0.5)",
 }))

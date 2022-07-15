@@ -1,8 +1,12 @@
 import {useState} from 'react';
 import {Link} from 'react-router-dom';
-import styles from 'styled-components';
 import Button from '../core/button';
 import Input from '../core/input';
+import InputContainer from '../core/loginAndSignUpForms/inputContainer';
+import ErrorMessage from '../core/loginAndSignUpForms/errorMessage';
+import ButtonContainer from '../core/loginAndSignUpForms/buttonContainer';
+import Label from '../core/loginAndSignUpForms/label';
+import Form from '../core/loginAndSignUpForms/form';
 import axios from 'axios';
 
 const SignUp = () => {
@@ -58,6 +62,7 @@ const SignUp = () => {
                 data: newUser
             })
             // redirect to main page
+            // clear inputs
         } catch(err) {
             console.log('error: ', err)
         }
@@ -100,46 +105,5 @@ const SignUp = () => {
         </Form>
     )
 }
-
-const InputContainer = styles.div({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    marginBottom: "40px",
-    width: "80%",
-    position: "relative",
-})
-
-const ButtonContainer = styles.div({
-    display: "flex",
-    gap: "2rem",
-
-})
-
-const Form = styles.form({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "1rem",
-    width: "80%",
-})
-
-const ErrorMessage = styles.p({
-    fontSize: "8px",
-    color: "red",
-    letterSpacing: "0.7px",
-    position: "absolute",
-    bottom: "-2rem",
-    left: "50%",
-    width: "100%",
-    textAlign: "center",
-    transform: "translate(-50%, 0)",
-})
-
-const Label = styles.label({
-    padding: "0 0 5px 0",
-})
 
 export default SignUp

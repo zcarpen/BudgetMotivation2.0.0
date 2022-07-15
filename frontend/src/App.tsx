@@ -1,21 +1,23 @@
 import styled from 'styled-components';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Button from "./core/button";
 import SignUp from './routes/SignUp';
-// import Nav from 
-
+import Login from './routes/Login';
+import Nav from './components/Nav'
+import Home from './routes/Home';
+import Motivation from './routes/Motivation';
+import Charts from './routes/Charts';
 
 function App() {
   return (
-    // <Container>
-    //   <Button onClick={(e: any) => {console.log("CLICKED!")}}>Test Button</Button>
-    //   <Button secondary onClick={(e: any) => {console.log("CLICKED!")}}>Test Button</Button>
-    // </Container>
     <Container>
       <Router>
-        {/* <Nav /> */}
+        <Nav />
         <Routes>
           <Route path='/sign-up' element={<SignUp />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/motivation' element={<Motivation />} />
+          <Route path='/charts' element={<Charts />} />
         </Routes>
       </Router>
     </Container>
@@ -26,7 +28,7 @@ const Container = styled.div({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "flex-start",
   width: "100%",
   height: "100%",
 })

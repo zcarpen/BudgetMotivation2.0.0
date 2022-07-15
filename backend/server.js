@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -7,11 +8,11 @@ const cors = require('cors');
 
 const User = require('./db/schemas/Users');
 const Transaction = require('./db/schemas/Transactions');
-const { urlencoded } = require('express');
 
 const PORT = process.env.PORT || 3002;
 const app = express();
 
+app.use(cookieParser())
 app.use(express.json())
 app.use(cors())
 
@@ -23,8 +24,11 @@ mongoose.connect(
 );
 
 
+
+
 async function authenticateToken(req, res, next) {
     const cookie = req.headers.cookie
+    console.log(cookie)
     const JWT = cookie.split("; ").filter(c => c.startsWith('accessToken'))[0].split('=')[1]
     console.log(JWT)
 
@@ -41,28 +45,31 @@ async function authenticateToken(req, res, next) {
 }
 
 // API Routes
-app.get('/login', async (req, res) => {
-    const user = await User.find({"username": "noemicarpen"});
-    const password = 'delete123'
-    console.log(process.env.SECRET)
-
-    if (!user) {
-        return res.status(401).send('Cannot find user')
-    }
-
+app.post('/login', async (req, res) => {
+    const {username, password} = req.body
+    
     try {
+        const user = await User.find({"username": username});
+    
+        if (!user) {
+            throw new Error('Cannot find user')
+        }
+
         if (await bcrypt.compare(password, user[0].password)) {
             const transactions = await Transaction.find({userID: user[0]._id.toString()})
             const secret = process.env.SECRET;
             const signedToken = jwt.sign({data: {userID: user[0]._id, username: user[0].username}}, secret )
-            res.cookie("accessToken", signedToken);
-            res.send({user, transactions})
+            // console.log(signedToken)
+            // res.cookie("accessToken", signedToken)
+            // localStorage.setItem('accessToken', signedToken)
+            res.send({user, transactions, accessToken: signedToken})
             // redirect to main expense page
         } else {
-            res.status(401).send('password does not match')
+            throw new Error('password does not match')
         }
     } catch(error) {
         console.log(error)
+        res.status(401).send(error.message)
     }
 })
 
