@@ -33,7 +33,7 @@ function Login() {
       })
       console.log(result.data)
       window.localStorage.setItem("accessToken", result.data.accessToken)
-      navigate('/home', { replace: true})
+      navigate('/', { replace: true})
       // save data into global context
       // redirect to main page
     } catch (err) {

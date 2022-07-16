@@ -22,13 +22,13 @@ function Select() {
         <Selected onClick={toggleSelect}>{selected}
             {openSelect && <Ul>
                 <Link to="/" style={{textDecoration: 'none'}}>
-                    <ListItem id="home" onClick={changeSelected}>Home</ListItem>
+                    <ListItem id="home">Home</ListItem>
                 </Link>
                 <Link to="/motivation" style={{textDecoration: 'none'}}>
-                    <ListItem id="motivation" onClick={changeSelected}>Motivation</ListItem>
+                    <ListItem id="motivation">Motivation</ListItem>
                 </Link>
                 <Link to="/charts" style={{textDecoration: 'none'}}>
-                    <ListItem id="charts" onClick={changeSelected}>Charts</ListItem>
+                    <ListItem id="charts">Charts</ListItem>
                 </Link>
             </Ul>}
         </Selected>

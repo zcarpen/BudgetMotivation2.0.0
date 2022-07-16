@@ -4,14 +4,14 @@ import styled from 'styled-components';
 import Select from './Select';
 
 function Nav() {
-  const ctx: any = useContext(UserContext);
-  console.log(ctx)
-    // only if loggedIn is true should the select menu be visible
+  const userCtx: any = useContext(UserContext);
+  const {username, isLoggedIn} = userCtx.userData;
+  
   return (
     <NavContainer>
-        <Title>{ctx.userData.selectedRoute.toUpperCase()}</Title>
-        <Select/>
-        <CurrentUser>yessir</CurrentUser>
+        <Title>(logo)</Title>
+        {isLoggedIn && <Select/>}
+        <CurrentUser>{username}</CurrentUser>
     </NavContainer>
   )
 }

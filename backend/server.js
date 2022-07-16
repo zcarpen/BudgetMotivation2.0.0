@@ -12,6 +12,7 @@ const Transaction = require('./db/schemas/Transactions');
 const PORT = process.env.PORT || 3002;
 const app = express();
 
+
 app.use(cookieParser())
 app.use(express.json())
 app.use(cors())
@@ -27,12 +28,9 @@ mongoose.connect(
 
 
 async function authenticateToken(req, res, next) {
-    const cookie = req.headers.cookie
-    console.log(cookie)
-    const JWT = cookie.split("; ").filter(c => c.startsWith('accessToken'))[0].split('=')[1]
-    console.log(JWT)
+    const accessToken = req.headers.authorization
 
-    await jwt.verify(JWT, process.env.SECRET, (err, user) => {
+    await jwt.verify(accessToken, process.env.SECRET, (err, user) => {
         if (err) {
             res.sendStatus(403);
             // redirect to login
@@ -50,17 +48,21 @@ app.post('/login', async (req, res) => {
     
     try {
         const user = await User.find({"username": username});
-    
+        console.log(user)
+        
+        
+        
         if (!user) {
             throw new Error('Cannot find user')
         }
-
+        
         if (await bcrypt.compare(password, user[0].password)) {
+            const {password, ...newUser} = user;
             const transactions = await Transaction.find({userID: user[0]._id.toString()})
             const secret = process.env.SECRET;
             const signedToken = jwt.sign({data: {userID: user[0]._id, username: user[0].username}}, secret )
-            
-            res.send({user, transactions, accessToken: signedToken})
+
+            res.send({user: newUser, transactions, accessToken: signedToken})
             // redirect to main expense page
         } else {
             throw new Error('password does not match')
@@ -129,6 +131,27 @@ app.post('/create-transaction', authenticateToken, async (req, res) => {
     } catch(error) {
         res.status(404).send('cannot create transaction')
         console.log(error)
+    }
+})
+
+app.get('/get-user', authenticateToken, async (req, res) => {
+    try {
+        const {userID, username} = req.user.data;
+        const user = await User.find({"username": username})
+        res.status(200).send(user)
+    } catch(err) {
+        res.status(400).send('not authenticated')
+    }
+
+})
+
+app.get('/get-transactions', async (req, res) => {
+    console.log(req.headers.userid)
+    try {
+        const transactions = await Transaction.find({userID: req.headers.userid})
+        res.status(200).send(transactions)
+    } catch(err) {
+        res.status(400).send('transaction fetch error')
     }
 })
 

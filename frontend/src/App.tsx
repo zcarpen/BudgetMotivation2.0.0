@@ -7,23 +7,26 @@ import Home from './routes/Home';
 import Motivation from './routes/Motivation';
 import Charts from './routes/Charts';
 import { UserInfoProvider } from './context/UserContext';
+import { TransactionsProvider } from './context/transactionContext';
 
 function App() {
   return (
-    <UserInfoProvider>
-      <Container>
-        <Router>
-          <Nav />
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/sign-up' element={<SignUp />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/motivation' element={<Motivation />} />
-            <Route path='/charts' element={<Charts />} />
-          </Routes>
-        </Router>
-      </Container>
-    </UserInfoProvider>
+    <Router>
+      <UserInfoProvider>
+        <TransactionsProvider>
+          <Container>
+              <Nav />
+              <Routes>
+                <Route path='/sign-up' element={<SignUp />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/' element={<Home />} />
+                <Route path='/motivation' element={<Motivation />} />
+                <Route path='/charts' element={<Charts />} />
+              </Routes>
+          </Container>
+        </TransactionsProvider>
+      </UserInfoProvider>
+    </Router>
   )
 }
 
