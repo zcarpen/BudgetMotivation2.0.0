@@ -3,9 +3,11 @@ import styles from 'styled-components';
 import {Link} from 'react-router-dom';
 import {useContext} from 'react';
 import UserContext from '../context/UserContext';
+import TransactionContext from '../context/transactionContext';
 
 function Select() {
-    const ctx: any = useContext(UserContext);
+    const userCtx: any = useContext(UserContext);
+    const transactionCtx: any = useContext(TransactionContext);
     const [openSelect, setOpenSelect] = useState(false);
     const [selected, setSelected] = useState('Home');
 
@@ -13,9 +15,13 @@ function Select() {
         setOpenSelect(!openSelect)
     }
 
-    const changeSelected = (e: any) => {
-        setSelected(e.target.id)
-        ctx.handleRedirect(e)
+    const handleLogout = () => {
+        localStorage.removeItem("accessToken")
+        userCtx.handleLogout()
+        transactionCtx.handleTransactionLogout()
+        
+
+        // also, reset the global state
     }
   return (
     <Container>
@@ -29,6 +35,9 @@ function Select() {
                 </Link>
                 <Link to="/charts" style={{textDecoration: 'none'}}>
                     <ListItem id="charts">Charts</ListItem>
+                </Link>
+                <Link to="/login" style={{textDecoration: 'none'}}>
+                    <ListItem id="logout" onClick={handleLogout} style={{color: "red"}}>logout</ListItem>
                 </Link>
             </Ul>}
         </Selected>

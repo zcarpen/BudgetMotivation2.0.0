@@ -4,14 +4,13 @@ import styled from 'styled-components';
 import Select from './Select';
 
 function Nav() {
-  const userCtx: any = useContext(UserContext);
-  const {username, isLoggedIn} = userCtx.userData;
-  
+  const {userData} = useContext(UserContext);
+
   return (
     <NavContainer>
         <Title>(logo)</Title>
-        {isLoggedIn && <Select/>}
-        <CurrentUser>{username}</CurrentUser>
+        {userData && <Select/>}
+        <CurrentUser>{userData?.username}</CurrentUser>
     </NavContainer>
   )
 }

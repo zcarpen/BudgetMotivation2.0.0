@@ -2,36 +2,50 @@ import axios from 'axios';
 import {createContext, useState, useEffect} from 'react';
 import { UserData } from '../types/UserData';
 
-const UserContext: any = createContext({
-    monthlyBudget: 0,
-    monthlyIncome: 0,
-    username: '',
-    visibleExpenses: [],
-    isLoggedIn: false,
-    selectedRoute: 'home',
-})
-export const UserInfoProvider = ({children}: any) => {
+interface IUserContext {
+    userData: UserData | null,
+    handleLogout: () => void,
+    handleLoginUserInfo: () => void,
+    isLoading: boolean,
 
-    const [userData, setUserData]: any = useState({
+}
+
+const UserContext = createContext<IUserContext>({
+    userData: {
         monthlyBudget: 0,
         monthlyIncome: 0,
         username: '',
         visibleExpenses: [],
-        isLoggedIn: false,
-        selectedRoute: 'home',
-    })
+        userID: '',
+    },
+    handleLogout: () => {},
+    handleLoginUserInfo: () => {},
+    isLoading: true,
+})
+export const UserInfoProvider = ({children}: any) => {
+
+    const [userData, setUserData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
 
     // get JWT out of local storage using useEffect
     useEffect(() => {
         const fetchUser = async() => {
-            const jwt = localStorage.getItem('accessToken');
+            const jwt = localStorage.getItem('accessToken') || '';
+            if (!jwt) {
+                setUserData(null);
+                setIsLoading(false);
+                return;
+            }
             const result = await axios.get('http://localhost:3001/get-user', {
                 headers: {
                     'Authorization': `${jwt}`
                 }
             })
-            if (!result.data[0]) return;
+            if (!result.data[0]) {
+                setUserData(null);
+                setIsLoading(false);
+                return;
+            }
             const {monthlyIncome, monthlyBudget, username, visibleExpenses, _id} = result.data[0];
 
             setUserData((prevState: any) => ({
@@ -41,32 +55,27 @@ export const UserInfoProvider = ({children}: any) => {
                 username, 
                 visibleExpenses,
                 userID: _id,
-                isLoggedIn: true,
-            }))
+            }));
+            setIsLoading(false);
         }
         fetchUser();
     }, [])
-        // setIsLoading to false
 
-    const handleLoggedIn = () => {
-        console.log('handlingLogin')
-        setUserData({
-            ...userData,
-            isLoggedIn: !userData.isLoggedIn
-        })
-
+    const handleLogout = () => {
+        setUserData(null)
     }
 
-    const handleRedirect = (e: any) => {
-        console.log('redirecting')
-        debugger;
+    const handleLoginUserInfo = (userInfo: any) => {
         setUserData({
-            ...userData,
-            selectedRoute: e.target.id
+            monthlyBudget: userInfo.monthlyBudget,
+            monthlyIncome: userInfo.monthlyIncome,
+            username: userInfo.username,
+            visibleExpenses: userInfo.visibleExpenses,
+            userID: userInfo._id
         })
     }
 
-    return <UserContext.Provider value={{userData, handleRedirect, handleLoggedIn}}>
+    return <UserContext.Provider value={{userData, isLoading, handleLoginUserInfo, handleLogout}}>
         {children}
     </UserContext.Provider>
 }

@@ -146,9 +146,10 @@ app.get('/get-user', authenticateToken, async (req, res) => {
 })
 
 app.get('/get-transactions', async (req, res) => {
-    console.log(req.headers.userid)
+    console.log(req.query.userID)
     try {
-        const transactions = await Transaction.find({userID: req.headers.userid})
+        const transactions = await Transaction.find({userID: req.query.userID})
+        console.log(transactions)
         res.status(200).send(transactions)
     } catch(err) {
         res.status(400).send('transaction fetch error')

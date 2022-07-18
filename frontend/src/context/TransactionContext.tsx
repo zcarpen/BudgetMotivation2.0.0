@@ -1,35 +1,41 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import {useNavigate} from 'react-router-dom'
 import UserContext from "./UserContext";
 import axios from 'axios';
+import { Transaction } from "../types/Transaction";
 
+interface ITransactionsContext {
+    transactions: Transaction[],
+    handleLoginTransactions: () => void,
+}
 
+const TransactionContext = createContext<ITransactionsContext>({
+    transactions: [],
+    handleLoginTransactions: () => {},
+})
 
-const TransactionContext = createContext([]);
-
-export const TransactionsProvider = ({children}: any) => {
-    const userCtx: any = useContext(UserContext);
+export const TransactionsProvider = ({ children }: any) => {
+    const { userData } = useContext(UserContext);
     const [transactions, setTransactions] = useState([]);
-    const navigate = useNavigate()
-
 
     useEffect(() => {
-        const fetchTransactions = async() => {    
-            try {
-                const transactions: any = await axios.get('http://localhost:3001/get-transactions', {
-                    headers: {
-                        'userID': `${userCtx.userData.userID}`
-                    }
-                }); 
+        const fetchTransactions = async() => {   
+            if (userData) {
+                const transactions: any = await axios.get(`http://localhost:3001/get-transactions?userID=${userData.userID}`); 
                 setTransactions(transactions.data)
-            } catch {
-                navigate('/login', { replace: true})
+            } else {
+                setTransactions([])
             }
         }
         fetchTransactions();
-    }, [userCtx])
+    }, [userData])
 
+    const handleLoginTransactions = (returnedTransactions: any) => {
+        setTransactions({
+            ...returnedTransactions
+        })
+    }
 
-
-    return <TransactionContext.Provider value={transactions}>{children}</TransactionContext.Provider>
+    return <TransactionContext.Provider value={{ transactions, handleLoginTransactions }}>{children}</TransactionContext.Provider>
 }
+
+export default TransactionContext;

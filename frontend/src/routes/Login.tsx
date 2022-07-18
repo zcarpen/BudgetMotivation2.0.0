@@ -1,5 +1,7 @@
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
+import UserContext from '../context/UserContext';
+import TransactionContext from '../context/transactionContext';
 import Form from '../core/loginAndSignUpForms/form';
 import Label from '../core/loginAndSignUpForms/label';
 import ButtonContainer from '../core/loginAndSignUpForms/buttonContainer';
@@ -11,6 +13,8 @@ import axios from 'axios';
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*"
 
 function Login() {
+  const {handleLoginUserInfo} = useContext(UserContext)
+  const {handleLoginTransactions} = useContext(TransactionContext)
 
   const [formData, setFormData] = useState({
     username: '',
@@ -26,16 +30,18 @@ function Login() {
     e.preventDefault();
 
     try {
-      const result = await axios({
+      const {data} = await axios({
         method: 'post',
         url: 'http://localhost:3001/login',
         data: formData,
       })
-      console.log(result.data)
-      window.localStorage.setItem("accessToken", result.data.accessToken)
-      navigate('/', { replace: true})
-      // save data into global context
+      window.localStorage.setItem("accessToken", data.accessToken)
+
+      handleLoginUserInfo(data.user[0])
+      handleLoginTransactions(data.transactions)
+
       // redirect to main page
+      navigate('/', { replace: true})
     } catch (err) {
       console.log(err)
       setError(true);

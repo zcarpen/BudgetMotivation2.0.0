@@ -6,27 +6,28 @@ import Nav from './components/Nav'
 import Home from './routes/Home';
 import Motivation from './routes/Motivation';
 import Charts from './routes/Charts';
+import AuthorizedWrapper from './middleware/AuthorizedWrapper';
 import { UserInfoProvider } from './context/UserContext';
 import { TransactionsProvider } from './context/transactionContext';
 
 function App() {
   return (
-    <Router>
-      <UserInfoProvider>
-        <TransactionsProvider>
-          <Container>
-              <Nav />
-              <Routes>
-                <Route path='/sign-up' element={<SignUp />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/' element={<Home />} />
-                <Route path='/motivation' element={<Motivation />} />
-                <Route path='/charts' element={<Charts />} />
-              </Routes>
-          </Container>
-        </TransactionsProvider>
-      </UserInfoProvider>
-    </Router>
+  <UserInfoProvider>
+    <TransactionsProvider>
+      <Router>
+        <Container>
+            <Nav />
+            <Routes>
+              <Route path='/sign-up' element={<SignUp />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/' element={<AuthorizedWrapper><Home /></AuthorizedWrapper>} />
+              <Route path='/motivation' element={<Motivation />} />
+              <Route path='/charts' element={<Charts />} />
+            </Routes>
+        </Container>
+      </Router>
+    </TransactionsProvider>
+  </UserInfoProvider>
   )
 }
 
