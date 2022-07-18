@@ -1,5 +1,4 @@
-const { Timestamp } = require('mongodb');
-const mongoose = require('mongoose');
+import mongoose  from 'mongoose'
 
 const TransactionsSchema = mongoose.Schema({
     expenseType: {
@@ -20,5 +19,4 @@ const TransactionsSchema = mongoose.Schema({
     }
 })
 
-const Transaction = mongoose.model("Transaction", TransactionsSchema);
-module.exports = Transaction;
+export const Transaction = mongoose.model("Transaction", TransactionsSchema);
