@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Button from '../core/button';
 import Input from '../core/input';
 import InputContainer from '../core/loginAndSignUpForms/inputContainer';
@@ -21,6 +21,7 @@ const SignUp = () => {
     const [passwordError, setPasswordError] = useState(false)
     const [incomeError, setIncomeError] = useState(false)
     const [budgetError, setBudgetError] = useState(false)
+    const navigate = useNavigate();
 
     const updateUserData = (e: any) => {
         const currentField = e.target.id;
@@ -61,8 +62,9 @@ const SignUp = () => {
                 url: 'http://localhost:3001/sign-up',
                 data: newUser
             })
-            // redirect to main page
-            // clear inputs
+            // redirect to login page
+            navigate('/login', { replace: true})
+
         } catch(err) {
             console.log('error: ', err)
         }

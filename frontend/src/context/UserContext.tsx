@@ -22,6 +22,7 @@ const UserContext = createContext<IUserContext>({
     handleLoginUserInfo: () => {},
     isLoading: true,
 })
+
 export const UserInfoProvider = ({children}: any) => {
 
     const [userData, setUserData] = useState(null)
