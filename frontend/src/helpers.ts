@@ -31,6 +31,7 @@ export function addTransaction(transactions: Transaction[], newExpense: Transact
 
 // function that calculates total expenses
 export function calcTotalExpenses(transactions: Transaction[]) {
+    // if (!transactions) return;
     return transactions.reduce((a: any, t) => a + t.cost, 0)
 }
 

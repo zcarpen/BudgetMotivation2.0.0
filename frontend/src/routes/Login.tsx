@@ -35,8 +35,8 @@ function Login() {
         url: 'http://localhost:3001/login',
         data: formData,
       })
+      
       window.localStorage.setItem("accessToken", data.accessToken)
-
       handleLoginUserInfo(data.user[0])
       handleLoginTransactions(data.transactions)
 

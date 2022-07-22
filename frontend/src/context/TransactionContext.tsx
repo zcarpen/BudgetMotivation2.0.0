@@ -30,9 +30,9 @@ export const TransactionsProvider = ({ children }: any) => {
     }, [userData])
 
     const handleLoginTransactions = (returnedTransactions: any) => {
-        setTransactions({
-            ...returnedTransactions
-        })
+        setTransactions(
+            returnedTransactions
+        )
     }
 
     return <TransactionContext.Provider value={{ transactions, handleLoginTransactions }}>{children}</TransactionContext.Provider>

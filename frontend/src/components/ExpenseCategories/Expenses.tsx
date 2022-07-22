@@ -2,6 +2,7 @@ import {useContext} from 'react';
 import UserContext from '../../context/UserContext';
 import TransactionContext from '../../context/transactionContext';
 import styles from 'styled-components'
+import TransactionModal from '../TransactionModal';
 import {FaCoffee, FaShoppingCart, FaGasPump, FaHamburger, FaTv, FaHome, FaMusic, FaGift, FaCandyCane, FaGamepad, FaSmile, FaPlus, FaRegStar  } from 'react-icons/fa';
 
 const icons = {
@@ -21,41 +22,47 @@ const icons = {
 }
 
 function Expenses() {
-    const {userData} = useContext(UserContext)
+    const {userData, modal, handleModal} = useContext(UserContext)
     const {transactions} = useContext(TransactionContext)
+    const openExpenseModal = (type: string) => {
+        handleModal(type)
+    }
 
   return (
-    <ExpensesContainer>
-        {userData?.visibleExpenses.map((e, idx) => {
-            if (e === 'other') {
-                return <Expense key={idx}><FaPlus /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'coffee') {
-                return <Expense key={idx}><FaCoffee /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'grocery') {
-                return <Expense key={idx}><FaShoppingCart /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'gas') {
-                return <Expense key={idx}><FaGasPump /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'eat-out') {
-                return <Expense key={idx}><FaHamburger /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'movie') {
-                return <Expense key={idx}><FaTv /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'music') {
-                return <Expense key={idx}><FaMusic /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'house') {
-                return <Expense key={idx}><FaHome /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'gifts') {
-                return <Expense key={idx}><FaGift /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'snack') {
-                return <Expense key={idx}><FaCandyCane /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'games') {
-                return <Expense key={idx}><FaGamepad /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'self-care') {
-                return <Expense key={idx}><FaSmile /><ExpenseType>{e}</ExpenseType></Expense>
-            } else if (e === 'newCategory') {
-                return <Expense key={idx}><FaRegStar style={{fontSize: ""}}/><ExpenseType>{e}</ExpenseType></Expense>
-            }
-        })}
-    </ExpensesContainer>
+    <>
+        <ExpensesContainer>
+            {userData?.visibleExpenses.map((exp, idx) => {
+                if (exp === 'other') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaPlus /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'coffee') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaCoffee /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'grocery') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaShoppingCart /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'gas') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaGasPump /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'eat-out') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaHamburger /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'movie') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaTv /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'music') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaMusic /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'house') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaHome /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'gifts') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaGift /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'snack') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaCandyCane /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'games') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaGamepad /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'self-care') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaSmile /><ExpenseType>{exp}</ExpenseType></Expense>
+                } else if (exp === 'newCategory') {
+                    return <Expense key={idx} onClick={() => openExpenseModal(exp)} id={exp}><FaRegStar style={{fontSize: ""}}/><ExpenseType>{exp}</ExpenseType></Expense>
+                }
+            })}
+        </ExpensesContainer>
+        {modal.isVisible && <TransactionModal />}
+    </>
   )
 }
 

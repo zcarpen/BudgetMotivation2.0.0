@@ -47,10 +47,7 @@ app.post('/login', async (req, res) => {
     const {username, password} = req.body
     
     try {
-        const user = await User.find({"username": username});
-        console.log(user)
-        
-        
+        const user = await User.find({"username": username});        
         
         if (!user) {
             throw new Error('Cannot find user')
@@ -75,7 +72,7 @@ app.post('/login', async (req, res) => {
 
 app.post('/sign-up', async (req, res) => {
     const {username, income, budget, password} = req.body;
-    console.log(username, income, budget, password)
+
     if (
         username.length < 6 || 
         password.length < 6 || 
@@ -146,7 +143,6 @@ app.get('/get-user', authenticateToken, async (req, res) => {
 })
 
 app.get('/get-transactions', async (req, res) => {
-    console.log(req.query.userID)
     try {
         const transactions = await Transaction.find({userID: req.query.userID})
         console.log(transactions)

@@ -5,8 +5,13 @@ import { UserData } from '../types/UserData';
 interface IUserContext {
     userData: UserData | null,
     handleLogout: () => void,
-    handleLoginUserInfo: () => void,
+    handleModal: (catagory: string) => void,
+    handleLoginUserInfo: (userInfo: any) => void,
     isLoading: boolean,
+    modal: {
+        isVisible: boolean,
+        transaction: string
+    }
 
 }
 
@@ -20,13 +25,22 @@ const UserContext = createContext<IUserContext>({
     },
     handleLogout: () => {},
     handleLoginUserInfo: () => {},
+    handleModal: () => {},
     isLoading: true,
+    modal: {
+        isVisible: false,
+        transaction: ''
+    }
 })
 
 export const UserInfoProvider = ({children}: any) => {
 
     const [userData, setUserData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [modal, setModal] = useState({
+        isVisible: false,
+        transaction: '',
+    })
 
     // get JWT out of local storage using useEffect
     useEffect(() => {
@@ -76,7 +90,14 @@ export const UserInfoProvider = ({children}: any) => {
         })
     }
 
-    return <UserContext.Provider value={{userData, isLoading, handleLoginUserInfo, handleLogout}}>
+    const handleModal = (category: string) => {
+        setModal({
+            isVisible: !modal.isVisible,
+            transaction: category,
+        })
+    }
+
+    return <UserContext.Provider value={{userData, modal, isLoading, handleLoginUserInfo, handleLogout, handleModal}}>
         {children}
     </UserContext.Provider>
 }
