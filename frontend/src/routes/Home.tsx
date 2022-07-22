@@ -1,11 +1,14 @@
-import React from 'react'
+import {useContext} from 'react'
 import styles from 'styled-components';
 import PageTitle from '../core/PageTitle';
 import UserFinances from '../components/UserFinances';
 import Expenses from '../components/ExpenseCategories/Expenses';
+import TransactionContext from '../context/transactionContext';
 import { IconContext } from 'react-icons';
 
 function Home() {
+
+  const {handleAddCategory, handleDeleteCategory} = useContext(TransactionContext)
   return (
     <HomeContainer>
       <PageTitle>Add An Expense</PageTitle>
@@ -17,8 +20,8 @@ function Home() {
         <Expenses />
       </IconContext.Provider>
       <ContainerForButtons>
-        <CategoryButton style={{backgroundColor: "rgba(124, 252, 0, 0.2)"}}>Add Transaction</CategoryButton>
-        <CategoryButton style={{backgroundColor: "rgba(255, 0, 0, 0.2)"}}>Delete Transaction</CategoryButton>
+        <CategoryButton style={{backgroundColor: "rgba(124, 252, 0, 0.2)"}} onClick={handleAddCategory}>Add Transaction</CategoryButton>
+        <CategoryButton style={{backgroundColor: "rgba(255, 0, 0, 0.2)"}} onClick={handleDeleteCategory}>Delete Transaction</CategoryButton>
       </ContainerForButtons>
     </HomeContainer>
   )

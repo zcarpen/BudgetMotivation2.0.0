@@ -2,18 +2,58 @@ import {useState, useContext} from 'react'
 import {createPortal} from 'react-dom';
 import styles from 'styled-components';
 import UserContext from '../context/UserContext';
+import TransactionContext from '../context/transactionContext';
 import Button from '../core/button';
-import {FaCoffee, FaShoppingCart, FaGasPump, FaHamburger, FaTv, FaHome, FaMusic, FaGift, FaCandyCane, FaGamepad, FaSmile, FaPlus, FaRegStar, FaRegTimesCircle } from 'react-icons/fa';
+import axios from 'axios';
+import {FaCoffee, FaShoppingCart, FaGasPump, FaHamburger, FaTv, FaHome, FaMusic, FaGift, FaCandyCane, FaGamepad, FaSmile, FaPlus, FaRegStar, FaTimes } from 'react-icons/fa';
 
+const icons: {
+    [key: string]: () => JSX.Element
+} = {
+    'other': () => <FaPlus />, 
+    'coffee':() => <FaCoffee />, 
+    'grocery':() => <FaShoppingCart />, 
+    'gas':() => <FaGasPump />, 
+    'eat-out':() => <FaHamburger />, 
+    'movie':() => <FaTv />, 
+    'music':() => <FaMusic />, 
+    'house':() => <FaHome />, 
+    'gifts':() => <FaGift />, 
+    'snack':() => <FaCandyCane />, 
+    'games':() => <FaGamepad />, 
+    'self-care':() => <FaSmile />,
+    'newCategory':() => <FaRegStar />,
+}
 function TransactionModal() {
-    const {modal, handleModal} = useContext(UserContext);
+    const {modal, handleModal, userData} = useContext(UserContext);
+    const {fetchTransactions} = useContext(TransactionContext)
     const [amt, setAmt] = useState('')
 
-    const submitTransaction = (e: any) => {
+    const submitTransaction = async (e: any) => {
         e.preventDefault()
-        console.log(modal.transaction)
-        console.log(amt)
+
         // axios request to add transaction
+        try {
+            const token = localStorage.getItem('accessToken');
+
+            const result = await axios({
+                url: 'http://localhost:3001/create-transaction',
+                method: 'post',
+                data: {
+                    amount: Number(amt),
+                    category: modal.transaction,
+                    userID: userData?.userID
+                },
+                headers: {
+                    'Authorization': `${token}`,
+                }
+            })
+            
+            fetchTransactions()
+        } catch (err) {
+            console.log(err)
+        }
+
         setAmt('')
         handleModal('')
     }
@@ -26,51 +66,27 @@ function TransactionModal() {
         setAmt(curValue)
     }
 
-    const iconSelector = (type: string) => {
-        if (type === 'other') {
-            return <FaPlus />
-        } else if (type === 'coffee') {
-            return <FaCoffee />
-        } else if (type === 'grocery') {
-            return <FaShoppingCart />
-        } else if (type === 'gas') {
-            return <FaGasPump />
-        } else if (type === 'eat-out') {
-            return <FaHamburger />
-        } else if (type === 'movie') {
-            return <FaTv />
-        } else if (type === 'music') {
-            return <FaMusic />
-        } else if (type === 'house') {
-            return <FaHome />
-        } else if (type === 'gifts') {
-            return <FaGift />
-        } else if (type === 'snack') {
-            return <FaCandyCane />
-        } else if (type === 'games') {
-            return <FaGamepad />
-        } else if (type === 'self-care') {
-            return <FaSmile />
-        } else if (type === 'newCategory') {
-            return <FaRegStar />
-        }
-    }
   return (
     <>
        {createPortal(<Backdrop onClick={() => handleModal('')}>
-        </Backdrop>, document.getElementById('backdrop'))}
+        </Backdrop>, document.getElementById('backdrop') as Element)}
        {createPortal(<ModalForm onSubmit={submitTransaction}>
-            <FaRegTimesCircle onClick={() => handleModal('')} style={{position: "absolute", top: 0, right: 0, transform: "translate(-50%, 50%)", fontSize: "1.5rem" }}/>
+            <FaTimes onClick={() => handleModal('')} style={{position: "absolute", top: 0, right: 0, transform: "translate(-50%, 50%)", fontSize: "1.5rem" }}/>
             <Category>{modal.transaction}</Category>
-            {iconSelector(modal.transaction)}
+            {icons[`${modal.transaction}`]()}
             <InputContainer>
                 <Input placeholder="$" onChange={handleAmountchange} value={amt}/>
             </InputContainer>
-            <Button type="submit" style={{letterSpacing: "1px", fontSize: "0.9rem"}}>Create Transaction</Button>
-        </ModalForm>, document.getElementById('overlay'))}
+            <NewButton type="submit">Create Transaction</NewButton>
+        </ModalForm>, document.getElementById('overlay') as Element)}
     </>
   )
 }
+
+const NewButton = styles(Button)({
+    letterSpacing: "1px",
+    fontSize: "0.9rem"
+})
 
 const Backdrop = styles.div({
     position: "fixed",

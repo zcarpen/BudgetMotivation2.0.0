@@ -115,11 +115,12 @@ app.post('/sign-up', async (req, res) => {
 })
 
 app.post('/create-transaction', authenticateToken, async (req, res) => {
-    console.log(req.user)
+    const {userID} = req.user.data
+    const {amount, category} = req.body;
     const transaction = new Transaction({
-        expenseType: 'coffee', 
-        cost: 5.35, 
-        userID: `${req.user.userID}`
+        expenseType: category, 
+        cost: amount, 
+        userID: userID
     });
 
     try {

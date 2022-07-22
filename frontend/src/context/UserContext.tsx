@@ -35,7 +35,7 @@ const UserContext = createContext<IUserContext>({
 
 export const UserInfoProvider = ({children}: any) => {
 
-    const [userData, setUserData] = useState(null)
+    const [userData, setUserData] = useState<UserData | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [modal, setModal] = useState({
         isVisible: false,
