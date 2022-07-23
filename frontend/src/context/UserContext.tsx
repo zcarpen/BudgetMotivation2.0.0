@@ -5,6 +5,7 @@ import { UserData } from '../types/UserData';
 interface IUserContext {
     userData: UserData | null,
     handleLogout: () => void,
+    fetchUser: () => void,
     handleModal: (catagory: string) => void,
     handleLoginUserInfo: (userInfo: any) => void,
     isLoading: boolean,
@@ -12,7 +13,7 @@ interface IUserContext {
         isVisible: boolean,
         transaction: string
     }
-
+    
 }
 
 const UserContext = createContext<IUserContext>({
@@ -23,6 +24,7 @@ const UserContext = createContext<IUserContext>({
         visibleExpenses: [],
         userID: '',
     },
+    fetchUser: () => {},
     handleLogout: () => {},
     handleLoginUserInfo: () => {},
     handleModal: () => {},
@@ -43,36 +45,38 @@ export const UserInfoProvider = ({children}: any) => {
     })
 
     // get JWT out of local storage using useEffect
-    useEffect(() => {
-        const fetchUser = async() => {
-            const jwt = localStorage.getItem('accessToken') || '';
-            if (!jwt) {
-                setUserData(null);
-                setIsLoading(false);
-                return;
-            }
-            const result = await axios.get('http://localhost:3001/get-user', {
-                headers: {
-                    'Authorization': `${jwt}`
-                }
-            })
-            if (!result.data[0]) {
-                setUserData(null);
-                setIsLoading(false);
-                return;
-            }
-            const {monthlyIncome, monthlyBudget, username, visibleExpenses, _id} = result.data[0];
-
-            setUserData((prevState: any) => ({
-                ...prevState,
-                monthlyBudget, 
-                monthlyIncome, 
-                username, 
-                visibleExpenses,
-                userID: _id,
-            }));
+    const fetchUser = async() => {
+        console.log('updated!')
+        const jwt = localStorage.getItem('accessToken') || '';
+        if (!jwt) {
+            setUserData(null);
             setIsLoading(false);
+            return;
         }
+        const result = await axios.get('http://localhost:3001/get-user', {
+            headers: {
+                'Authorization': `${jwt}`
+            }
+        })
+        if (!result.data[0]) {
+            setUserData(null);
+            setIsLoading(false);
+            return;
+        }
+        const {monthlyIncome, monthlyBudget, username, visibleExpenses, _id} = result.data[0];
+
+        setUserData((prevState: any) => ({
+            ...prevState,
+            monthlyBudget, 
+            monthlyIncome, 
+            username, 
+            visibleExpenses,
+            userID: _id,
+        }));
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
         fetchUser();
     }, [])
 
@@ -97,7 +101,7 @@ export const UserInfoProvider = ({children}: any) => {
         })
     }
 
-    return <UserContext.Provider value={{userData, modal, isLoading, handleLoginUserInfo, handleLogout, handleModal}}>
+    return <UserContext.Provider value={{userData, modal, isLoading, handleLoginUserInfo, handleLogout, handleModal, fetchUser}}>
         {children}
     </UserContext.Provider>
 }

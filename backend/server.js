@@ -132,6 +132,21 @@ app.post('/create-transaction', authenticateToken, async (req, res) => {
     }
 })
 
+app.put('/update-transaction',authenticateToken, async (req, res) => {
+    try {
+        const {userID, username} = req.user.data
+        const {transactions, category} = req.body
+        const newTransactions = transactions.filter(c => c !== category);
+    
+        await User.updateOne({"username": username}, { $set: {visibleExpenses: newTransactions}})
+        res.status(200).send('updated')
+    } catch(err) {
+        res.status(500).send('not updated')
+    }
+    // console.log(user)
+
+})
+
 app.get('/get-user', authenticateToken, async (req, res) => {
     try {
         const {userID, username} = req.user.data;
