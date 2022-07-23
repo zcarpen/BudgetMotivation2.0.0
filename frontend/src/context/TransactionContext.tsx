@@ -30,6 +30,7 @@ export const TransactionsProvider = ({ children }: any) => {
     const [isAdding, setIsAdding] = useState(false)
 
     const fetchTransactions = useCallback(async() => {   
+        console.log('fetching transactions')
         if (userData) {
             const transactions: any = await axios.get(`http://localhost:3001/get-transactions?userID=${userData.userID}`); 
             setTransactions(transactions.data)

@@ -5,83 +5,67 @@ import UserContext from '../context/UserContext';
 import TransactionContext from '../context/transactionContext';
 import Button from '../core/button';
 import axios from 'axios';
-import {FaCoffee, FaShoppingCart, FaGasPump, FaHamburger, FaTv, FaHome, FaMusic, FaGift, FaCandyCane, FaGamepad, FaSmile, FaPlus, FaRegStar, FaTimes } from 'react-icons/fa';
+import {FaRegStar, FaTimes } from 'react-icons/fa';
 
-const icons: {
-    [key: string]: () => JSX.Element
-} = {
-    'other': () => <FaPlus />, 
-    'coffee':() => <FaCoffee />, 
-    'grocery':() => <FaShoppingCart />, 
-    'gas':() => <FaGasPump />, 
-    'eat-out':() => <FaHamburger />, 
-    'movie':() => <FaTv />, 
-    'music':() => <FaMusic />, 
-    'house':() => <FaHome />, 
-    'gifts':() => <FaGift />, 
-    'snack':() => <FaCandyCane />, 
-    'games':() => <FaGamepad />, 
-    'self-care':() => <FaSmile />,
-    'newCategory':() => <FaRegStar />,
-}
-function TransactionModal() {
-    const {modal, handleModal, userData} = useContext(UserContext);
-    const {fetchTransactions} = useContext(TransactionContext)
-    const [amt, setAmt] = useState('')
+function AddCategoryModal() {
+    const {userData} = useContext(UserContext);
+    const {fetchTransactions, handleAddCategory} = useContext(TransactionContext)
+    const [name, setName] = useState('')
 
-    const submitTransaction = async (e: any) => {
+    const updateCategories = async (e: any) => {
+        if (userData?.visibleExpenses?.length >= 12) {
+            // create error
+            return
+        }
         e.preventDefault()
-
         // axios request to add transaction
         try {
             const token = localStorage.getItem('accessToken');
 
             const result = await axios({
-                url: 'http://localhost:3001/create-transaction',
+                url: 'http://localhost:3001/add-transaction',
                 method: 'put',
                 data: {
-                    amount: Number(amt),
-                    category: modal.transaction,
-                    userID: userData?.userID
+                    name: name,
+                    transactions: userData?.visibleExpenses
                 },
                 headers: {
                     'Authorization': `${token}`,
                 }
             })
-
+            console.log('completed update')
             fetchTransactions()
         } catch (err) {
             console.log(err)
         }
 
-        setAmt('')
-        handleModal('')
+        setName('')
+        handleAddCategory()
     }
 
-    const handleAmountchange = (e: any) => {
+    const handleChange = (e: any) => {
         const curValue = e.target.value
-        if(isNaN(curValue) || Number(Number(curValue).toFixed(2)) !== Number(curValue)) {
-            return;
+        if (curValue.length < 12) {
+            setName(curValue)
         }
-        setAmt(curValue)
+        return
     }
 
   return (
     <>
-       {createPortal(<Backdrop onClick={() => handleModal('')}>
+       {createPortal(<Backdrop onClick={handleAddCategory}>
         </Backdrop>, document.getElementById('backdrop') as Element)}
-       {createPortal(<ModalForm onSubmit={submitTransaction}>
+       {createPortal(<ModalForm onSubmit={updateCategories}>
             <Close 
-                onClick={() => handleModal('')} 
+                onClick={handleAddCategory}                
                 style={{color: "#fff"}}
                 size={20}
             />
-            <Category>{modal.transaction}</Category>
-            {icons[`${modal.transaction}`]()}
+            <FaRegStar />
             <InputContainer>
-                <Input placeholder="$" onChange={handleAmountchange} value={amt}/>
+                <Input placeholder="less than 12 characters" onChange={handleChange} value={name}/>
             </InputContainer>
-            <NewButton type="submit">Create Transaction</NewButton>
+            <NewButton type="submit">Create Category</NewButton>
         </ModalForm>, document.getElementById('overlay') as Element)}
     </>
   )
@@ -97,7 +81,6 @@ const Close = styles(FaTimes)({
     top: 0, 
     right: 0, 
     transform: "translate(-50%, 50%)", 
-    fontSize: "2rem",
     padding: "0.25rem",
     backgroundColor: "#000",
     borderRadius: "50%",
@@ -117,7 +100,7 @@ const ModalForm = styles.form({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     position: "fixed",
     top: "20vh",
     left: "10%",
@@ -154,4 +137,4 @@ const InputContainer =  styles.p({
 })
 
 
-export default TransactionModal
+export default AddCategoryModal

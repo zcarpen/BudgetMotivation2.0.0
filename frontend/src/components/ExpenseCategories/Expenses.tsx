@@ -1,11 +1,14 @@
 import {useContext, useState} from 'react';
 import UserContext from '../../context/UserContext';
+import TransactionContext from '../../context/transactionContext';
 import styles from 'styled-components'
 import TransactionModal from '../TransactionModal';
 import Expense from './Expense';
+import AddCategoryModal from '../AddCategoryModal';
 
 function Expenses() {
     const {userData, modal} = useContext(UserContext)
+    const {isAdding} = useContext(TransactionContext)
     const [displayError, setDisplayError] = useState({
         isVisible: false,
         errorMessage: '',
@@ -33,6 +36,7 @@ function Expenses() {
             {userData?.visibleExpenses.map((exp, idx) => <Expense handleDisplayError={handleDisplayError} key={idx} category={exp}/>)}
         </ExpensesContainer>
         {modal.isVisible && <TransactionModal />}
+        {isAdding && <AddCategoryModal />}
     </OuterContainer>
   )
 }

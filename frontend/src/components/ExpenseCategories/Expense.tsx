@@ -44,7 +44,7 @@ function Expense({category, handleDisplayError}: any) {
             // updates transactions in database
             try {
                 const accessToken = localStorage.getItem('accessToken')
-                console.log(category)
+
                 await axios({
                     method: 'put',
                     url: 'http://localhost:3001/update-transaction',
@@ -76,7 +76,7 @@ function Expense({category, handleDisplayError}: any) {
             onClick={() => deleteCategory(category)} 
         />
         }
-        {icons[`${category}`]()}
+        {icons[`${category}`] ? icons[`${category}`]() : <FaRegStar onClick={() => openExpenseModal(category)}/>}
         <ExpenseType>{category}</ExpenseType>
     </ExpenseWrapper>
   )

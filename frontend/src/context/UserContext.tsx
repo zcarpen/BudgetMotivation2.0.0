@@ -46,7 +46,6 @@ export const UserInfoProvider = ({children}: any) => {
 
     // get JWT out of local storage using useEffect
     const fetchUser = async() => {
-        console.log('updated!')
         const jwt = localStorage.getItem('accessToken') || '';
         if (!jwt) {
             setUserData(null);

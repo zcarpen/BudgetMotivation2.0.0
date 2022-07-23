@@ -134,7 +134,7 @@ app.post('/create-transaction', authenticateToken, async (req, res) => {
 
 app.put('/update-transaction',authenticateToken, async (req, res) => {
     try {
-        const {userID, username} = req.user.data
+        const {username} = req.user.data
         const {transactions, category} = req.body
         const newTransactions = transactions.filter(c => c !== category);
     
@@ -144,12 +144,26 @@ app.put('/update-transaction',authenticateToken, async (req, res) => {
         res.status(500).send('not updated')
     }
     // console.log(user)
+    
+})
 
+app.put('/add-transaction', authenticateToken, async (req, res) => {
+    try {
+        const {username} = req.user.data
+        const {name, transactions} = req.body
+        const newTransactions = [...transactions, name]
+        
+        await User.updateOne({"username": username}, { $set: {visibleExpenses: newTransactions}})
+        res.status(200).send('updated')
+
+    } catch (err) {
+        res.status(500).send('transaction not added')
+    }
 })
 
 app.get('/get-user', authenticateToken, async (req, res) => {
     try {
-        const {userID, username} = req.user.data;
+        const {username} = req.user.data;
         const user = await User.find({"username": username})
         res.status(200).send(user)
     } catch(err) {
@@ -161,7 +175,6 @@ app.get('/get-user', authenticateToken, async (req, res) => {
 app.get('/get-transactions', async (req, res) => {
     try {
         const transactions = await Transaction.find({userID: req.query.userID})
-        console.log(transactions)
         res.status(200).send(transactions)
     } catch(err) {
         res.status(400).send('transaction fetch error')
