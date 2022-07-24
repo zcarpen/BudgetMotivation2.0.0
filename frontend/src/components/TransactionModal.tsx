@@ -38,7 +38,7 @@ function TransactionModal() {
 
             const result = await axios({
                 url: 'http://localhost:3001/create-transaction',
-                method: 'put',
+                method: 'post',
                 data: {
                     amount: Number(amt),
                     category: modal.transaction,

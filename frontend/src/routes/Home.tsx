@@ -20,8 +20,8 @@ function Home() {
         <Expenses />
       </IconContext.Provider>
       <ContainerForButtons>
-        <CategoryButton style={{backgroundColor: "rgba(124, 252, 0, 0.2)"}} onClick={handleAddCategory}>Add Transaction</CategoryButton>
-        <CategoryButton style={{backgroundColor: "rgba(255, 0, 0, 0.2)"}} onClick={handleDeleteCategory}>Delete Transaction</CategoryButton>
+        <CategoryButton style={{backgroundColor: "rgba(124, 252, 0, 0.2)"}} onClick={handleAddCategory}>Add Category</CategoryButton>
+        <CategoryButton style={{backgroundColor: "rgba(255, 0, 0, 0.2)"}} onClick={handleDeleteCategory}>Delete Category</CategoryButton>
       </ContainerForButtons>
     </HomeContainer>
   )

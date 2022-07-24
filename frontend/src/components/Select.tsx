@@ -18,7 +18,7 @@ function Select() {
     const handleLogout = () => {
         localStorage.removeItem("accessToken")
         userCtx.handleLogout()
-        transactionCtx.handleTransactionLogout()
+        transactionCtx?.handleTransactionLogout()
         
 
         // also, reset the global state

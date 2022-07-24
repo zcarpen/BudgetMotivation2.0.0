@@ -8,8 +8,8 @@ import axios from 'axios';
 import {FaRegStar, FaTimes } from 'react-icons/fa';
 
 function AddCategoryModal() {
-    const {userData} = useContext(UserContext);
-    const {fetchTransactions, handleAddCategory} = useContext(TransactionContext)
+    const {userData, fetchUser} = useContext(UserContext);
+    const {handleAddCategory} = useContext(TransactionContext)
     const [name, setName] = useState('')
 
     const updateCategories = async (e: any) => {
@@ -33,8 +33,8 @@ function AddCategoryModal() {
                     'Authorization': `${token}`,
                 }
             })
-            console.log('completed update')
-            fetchTransactions()
+
+            fetchUser()
         } catch (err) {
             console.log(err)
         }

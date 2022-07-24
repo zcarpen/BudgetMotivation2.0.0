@@ -61,7 +61,6 @@ function Expense({category, handleDisplayError}: any) {
                 // *******let user know transaction could not be changed...
                 console.log(err)
             }
-            console.log('DELETE!!!!')
         } else {
             return
         }

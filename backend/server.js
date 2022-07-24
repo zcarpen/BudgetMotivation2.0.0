@@ -142,9 +142,7 @@ app.put('/update-transaction',authenticateToken, async (req, res) => {
         res.status(200).send('updated')
     } catch(err) {
         res.status(500).send('not updated')
-    }
-    // console.log(user)
-    
+    }    
 })
 
 app.put('/add-transaction', authenticateToken, async (req, res) => {
