@@ -8,6 +8,7 @@ interface ITransactionsContext {
     isDeleting: boolean,
     isAdding: boolean,
     handleLoginTransactions: (returnedTransactions: Transaction[]) => void,
+    handleLogout: () => void,
     handleDeleteCategory: () => void,
     handleAddCategory: () => void,
     fetchTransactions: () => void,
@@ -18,6 +19,7 @@ const TransactionContext = createContext<ITransactionsContext>({
     isDeleting: false,
     isAdding: false,
     handleLoginTransactions: (returnedTransactions) => {},
+    handleLogout: () => {},
     handleDeleteCategory: () => {},
     handleAddCategory: () => {},
     fetchTransactions: () => {},
@@ -48,6 +50,9 @@ export const TransactionsProvider = ({ children }: any) => {
             returnedTransactions
         )
     }
+    
+    const handleLogout = () => setTransactions([])
+
 
     const handleDeleteCategory = () => {
         setIsDeleting(!isDeleting)
@@ -57,7 +62,7 @@ export const TransactionsProvider = ({ children }: any) => {
         setIsAdding(!isAdding)
     }
 
-    return <TransactionContext.Provider value={{ transactions, isDeleting, isAdding, handleLoginTransactions, handleAddCategory, handleDeleteCategory, fetchTransactions }}>{children}</TransactionContext.Provider>
+    return <TransactionContext.Provider value={{ transactions, isDeleting, isAdding, handleLoginTransactions, handleAddCategory, handleDeleteCategory, handleLogout, fetchTransactions }}>{children}</TransactionContext.Provider>
 }
 
 export default TransactionContext;
